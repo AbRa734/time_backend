@@ -105,6 +105,9 @@ export async function editNote(noteId, action, payload)
 
             if (error)
                 console.error(`Couldn't update note info! ${error}`);
+            else {
+                return true;
+            }
 
         }
         else if (action === "deleteNote")
@@ -116,6 +119,9 @@ export async function editNote(noteId, action, payload)
 
             if (error)
                 console.error(`Couldn't update note info! ${error}`);
+            else {
+                return true;
+            }
         }
     }
     catch (err)
@@ -147,6 +153,9 @@ export async function editTodo(todoId, action, payload)
 
             if (error)
                 console.error(`Couldn't update todo info! ${error}`);
+            else {
+                return true;
+            }
 
         }
         else if (action === "deleteNote")
@@ -158,6 +167,9 @@ export async function editTodo(todoId, action, payload)
 
             if (error)
                 console.error(`Couldn't update todo info! ${error}`);
+            else {
+                return true;
+            }
         }
     }
     catch (err)
@@ -339,6 +351,9 @@ export async function changePassword(userId, newPassword)
 
         if (error)
             console.error(`Couldn't update user info! ${error}`);
+        else {
+            return true;
+        }
     }
     catch (err)
     {
@@ -408,13 +423,16 @@ export async function hideTab(userId, hiddenOptions)
 {
     try
     {
-        const { error } = await supabase
+        const { data, error } = await supabase
             .from('notes_users')
             .update({ hiddenOptions: hiddenOptions })
             .eq('id', userId)
 
         if (error)
             console.error(`Couldn't update user info! ${error}`);
+        else {
+            return true;
+        }
     }
     catch (err)
     {
@@ -452,6 +470,9 @@ export async function changePhoto(userId, newPhoto)
 
         if (error)
             console.error(`Couldn't update user info! ${error}`);
+        else {
+            return true;
+        }
     }
     catch (err)
     {
@@ -470,6 +491,9 @@ export async function deleteAccount(userId)
 
         if (error)
             console.error(`Couldn't delete user account! ${error}`);
+        else {
+            return true;
+        }
     }
     catch (err)
     {
@@ -540,15 +564,20 @@ export async function getTimetable(userId)
 export async function insertTimetable(userId, fromTime, toTime, subjectId, ustawionaData)
 {
     try {
+        const finalDateSplit = ustawionaData?.split('.');
+        const finalDate = `${finalDateSplit[2]}-${finalDateSplit[1]}-${finalDateSplit[0]}`;
+
         const { data, error } = await supabase
             .from('notes_timetable')
             .insert([
-                { subjectId:subjectId, fromTime:fromTime, toTime:toTime, userId: userId, data:ustawionaData },
+                { subjectId:subjectId, fromTime:fromTime, toTime:toTime, userId: userId, data:finalDate },
             ])
             .select()
 
-        if (error)
+        if (error){
             console.error(`Couldn't add new timetable! ${error}`);
+            console.log(error);
+        }
 
         return data;
     }
@@ -581,10 +610,14 @@ export async function getExams(userId)
 export async function insertExams(userId, time, date, subjectId, teacher)
 {
     try {
+        const finalDateSplit = date?.split('.');
+        const finalDate = `${finalDateSplit[2]}-${finalDateSplit[1]}-${finalDateSplit[0]}`;
+
+
         const { data, error } = await supabase
             .from('notes_exams')
             .insert([
-                { subjectId:subjectId, time:time, date:date, userId: userId, teacher:teacher },
+                { subjectId:subjectId, time:time, date:finalDate, userId: userId, teacher:teacher },
             ])
             .select()
 
@@ -621,10 +654,14 @@ export async function getActivities(userId)
 export async function insertActivities(userId, date, name)
 {
     try {
+        const finalDateSplit = date?.split('.');
+        const finalDate = `${finalDateSplit[2]}-${finalDateSplit[1]}-${finalDateSplit[0]}`;
+
+
         const { data, error } = await supabase
             .from('notes_activities')
             .insert([
-                { userId: userId, date:date, name:name },
+                { userId: userId, date:finalDate, name:name },
             ])
             .select()
 
@@ -661,10 +698,15 @@ export async function getActivitiesWork(userId)
 export async function insertActivitiesWork(userId, date, time, content)
 {
     try {
+
+        const finalDateSplit = date?.split('.');
+        const finalDate = `${finalDateSplit[2]}-${finalDateSplit[1]}-${finalDateSplit[0]}`;
+
+
         const { data, error } = await supabase
             .from('notes_work_activities')
             .insert([
-                { userId: userId, date:date, time:time, content:content },
+                { userId: userId, date:finalDate, time:time, content:content },
             ])
             .select()
 
@@ -701,10 +743,13 @@ export async function getTasksWork(userId)
 export async function insertTaskWork(userId, date, time, content)
 {
     try {
+        const finalDateSplit = date?.split('.');
+        const finalDate = `${finalDateSplit[2]}-${finalDateSplit[1]}-${finalDateSplit[0]}`;
+
         const { data, error } = await supabase
             .from('notes_work_tasks')
             .insert([
-                { userId: userId, date:date, time:time, content:content },
+                { userId: userId, date:finalDate, time:time, content:content },
             ])
             .select()
 
@@ -741,10 +786,13 @@ export async function getMeetingWork(userId)
 export async function insertMeetingWork(userId, date, time, content)
 {
     try {
+        const finalDateSplit = date?.split('.');
+        const finalDate = `${finalDateSplit[2]}-${finalDateSplit[1]}-${finalDateSplit[0]}`;
+
         const { data, error } = await supabase
             .from('notes_work_meetings')
             .insert([
-                { userId: userId, date:date, time:time, content:content },
+                { userId: userId, date:finalDate, time:time, content:content },
             ])
             .select()
 
